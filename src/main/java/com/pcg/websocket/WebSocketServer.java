@@ -87,7 +87,7 @@ public class WebSocketServer {
      */
     public void sendMessage(String message) throws IOException {
 
-        this.session.getBasicRemote().sendText("服务器返回的:"+message);
+        this.session.getBasicRemote().sendText(message);
     }
 
 
