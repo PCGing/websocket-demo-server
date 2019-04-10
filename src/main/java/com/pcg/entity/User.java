@@ -15,9 +15,9 @@ import java.util.Date;
  * @Date: 16:00 2018/12/7
 **/
 
+@Data
 @Slf4j
 @Entity(name = "t_user")
-@Data
 public class User implements Serializable {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -29,9 +29,6 @@ public class User implements Serializable {
     private String phone;   //电话
     private Date registerTime;  //注册时间
     private int status = 0;    //状态  0:未验证
-
-    private Long userInfoId;//userInfo id
-
     private Long createBy;//创建者id
     private Date createByTime;//被创建时间
 
