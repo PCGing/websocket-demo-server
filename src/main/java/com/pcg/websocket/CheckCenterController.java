@@ -25,9 +25,9 @@ public class CheckCenterController extends BaseApi {
     //推送数据接口
     @ResponseBody
     @RequestMapping("/sockjs/push/{cid}")
-    public R pushToWeb( @PathVariable String cid, String message) {
+    public R pushToWeb( @PathVariable String cid, String message) throws Exception {
         try {
-            WebSocketServer.sendInfo(message,cid);
+            WebSocketServer.sendInfo(message, cid);
         } catch (IOException e) {
             e.printStackTrace();
             return fail( cid+"#"+e.getMessage());
