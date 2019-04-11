@@ -29,8 +29,8 @@ public class RoomResource extends BaseApi{
      * 注册
      */
     @ResponseBody
-    @PostMapping("/register")
-    public R register( @RequestBody Room room, HttpServletRequest request) {
+    @PostMapping("/addRoom")
+    public R addRoom( @RequestBody Room room, HttpServletRequest request) {
         System.out.println (room);
         room.setStatus ( 1 );
         room.setCreateByTime ( new Date ( ) );
@@ -41,10 +41,29 @@ public class RoomResource extends BaseApi{
         return fail ("添加房间失败，请重试");
     }
 
+    /**
+     * @Date 11:15 2019/04/11
+     * @Param 查询所有房间
+     * @return com.pcg.entity.R
+    **/
     @ResponseBody
     @GetMapping("/findAll")
     public R all(HttpServletRequest request) {
         return ok (roomRepository.findByStatus(1));
+    }
+
+    @ResponseBody
+    @GetMapping("/userIsRoom")
+    public R userIsRoom(HttpServletRequest request,@RequestParam Long roomId, @RequestParam Long userId){
+        Room room = roomRepository.findOne ( roomId );
+        String talkUser = CreateMD5.convertMD5 (room.getTalkUser ());
+        String[] userIds = talkUser.split ( "," );
+        for (String user_id : userIds) {
+            if ( user_id.equals ( userId.toString () ) ){
+                System.out.println ("该房间有该用户");
+            }
+        }
+        return null;
     }
 
 }

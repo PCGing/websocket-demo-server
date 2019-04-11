@@ -13,19 +13,22 @@ import java.util.Date;
 /**
  * @ClassName Room
  * @AUTHOR 潘晨光
- * @DATE 2019/04/11 10:46
+ * @DATE 2019/04/10 17:26
  **/
 @Data
 @Slf4j
-@Entity(name = "t_room")
-public class Room implements Serializable {
+@Entity(name = "t_content_info")
+public class ContentInfo implements Serializable {
+
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
     private Long id;
-
-    private String talkUser;
-
+    private String content;
+    private Long fromUserId;    //发送人Id
+    private Long toUserId;      //接收人Id
     private Integer status;
     private Long createBy;//创建者id
     private Date createByTime;//被创建时间
+    private Long roomId;
+
 }
