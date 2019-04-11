@@ -63,7 +63,7 @@ public class RoomResource extends BaseApi{
                 System.out.println ("该房间有该用户");
             }
         }
-        return null;
+        return ok ();
     }
 
 }
