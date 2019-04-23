@@ -1,6 +1,7 @@
 package com.pcg.dao;
 
 import com.pcg.entity.ContentInfo;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.util.List;

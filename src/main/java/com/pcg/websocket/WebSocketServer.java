@@ -1,10 +1,7 @@
 package com.pcg.websocket;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 import javax.websocket.OnClose;
@@ -15,20 +12,33 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import com.google.gson.Gson;
+import com.pcg.api.BaseApi;
+import com.pcg.api.ContentInfoResource;
+import com.pcg.dao.ContentInfoRepository;
+import com.pcg.entity.ContentInfo;
+import com.pcg.util.SpringUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 
 @Slf4j
-@Component
 @ServerEndpoint("/websocket/{sid}")
-public class WebSocketServer {
+@Controller
+public class WebSocketServer extends BaseApi {
+
+    private ContentInfoRepository contentInfoRepository;
+
+    public WebSocketServer() {
+        contentInfoRepository = SpringUtil.getBean(ContentInfoRepository.class);
+    }
 
     /**
      * 静态变量，用来记录当前在线连接数。
     **/
-    private static Map<String,Integer> onlineCount = new HashMap <> (  );
+    private Map<String,Integer> onlineCount = new HashMap <> (  );
 
-    private static final Map <String, Set <Session> > rooms = new ConcurrentHashMap ();
+    private final Map <String, Set <Session> > rooms = new ConcurrentHashMap ();
 
     //接收sid
     private String sid="";
@@ -71,6 +81,17 @@ public class WebSocketServer {
      * @param message 客户端发送过来的消息*/
     @OnMessage
     public void onMessage( String message, Session session) throws Exception {
+
+        Gson gson = new Gson();
+        Map<String,Object> map = gson.fromJson ( message , new HashMap < String, Object > ().getClass () );
+
+        ContentInfo contentInfo = new ContentInfo ();
+        contentInfo.setContent(map.get("message").toString());
+        contentInfo.setFromUserId(Long.valueOf(map.get("id").toString()));
+        contentInfo.setToUserId(Long.valueOf (sid));
+        contentInfo.setStatus (1);
+        contentInfo.setCreateByTime (new Date());
+        contentInfoRepository.save (contentInfo);
         log.info("收到来自窗口"+sid+"的信息:"+message);
         sendMessage(message);
     }
@@ -92,7 +113,7 @@ public class WebSocketServer {
     /**
      * 群发自定义消息
      * */
-    public static void sendInfo(String message, String sid) throws IOException {
+    public void sendInfo(String message, String sid) throws IOException {
         log.info("推送消息到窗口"+sid+"，推送内容:"+message);
         for (Session session : rooms.get(sid)) {
             session.getBasicRemote().sendText(message);

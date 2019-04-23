@@ -28,4 +28,7 @@ public interface UserRepository extends PagingAndSortingRepository<User,Long>{
     List<User> findByStatus(int status);
 
     User findByStatusAndId(int status, Long id);
+
+    @Query(value = "select * from t_user where status=1 and id in(?1)",nativeQuery = true)
+    List< User> findByIds ( String ids );
 }

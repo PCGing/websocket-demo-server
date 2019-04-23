@@ -26,7 +26,7 @@ public class RoomResource extends BaseApi{
     RoomRepository roomRepository;
 
     /**
-     * 注册
+     * 添加房间
      */
     @ResponseBody
     @PostMapping("/addRoom")

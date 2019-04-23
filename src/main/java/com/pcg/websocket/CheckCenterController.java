@@ -2,6 +2,7 @@ package com.pcg.websocket;
 
 import com.pcg.api.BaseApi;
 import com.pcg.entity.R;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -22,12 +23,15 @@ import java.util.Map;
 @RequestMapping("/websocket")
 public class CheckCenterController extends BaseApi {
 
+    @Autowired
+    WebSocketServer webSocketServer;
+
     //推送数据接口
     @ResponseBody
     @RequestMapping("/sockjs/push/{cid}")
     public R pushToWeb( @PathVariable String cid, String message) throws Exception {
         try {
-            WebSocketServer.sendInfo(message, cid);
+            webSocketServer.sendInfo(message, cid);
         } catch (IOException e) {
             e.printStackTrace();
             return fail( cid+"#"+e.getMessage());
